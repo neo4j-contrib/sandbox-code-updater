@@ -1,0 +1,58 @@
+name: Sandbox Code Batch Updater CI
+
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+    branches: [ '**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Build with Maven
+      run: mvn --show-version --batch-mode verify
+  update-sandboxes:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Cache local Maven repository
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Set up Git config
+      run: |
+        git config --global user.name "Sandbox 🤖"
+        git config --global user.email ${{ secrets.EMAIL }}
+    - name: Clone neo4j-graph-examples/template repo
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      run: |
+        git clone https://$GITHUB_TOKEN@github.com/neo4j-graph-examples/template/
+    - name: Run updater against sandboxes
+      env:
+        GITHUB_USERNAME: ${{ secrets.USERNAME }}
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        SANDBOX_CODE_SAMPLES_PATH: ${{ github.workspace }}/template
+      run: >
+        mvn --show-version --batch-mode spring-boot:run -Dspring-boot.run.arguments=--logging.level.com.neo4j=TRACE
