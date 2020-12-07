@@ -1,6 +1,6 @@
 sandbox:
   repositories:
-#    - https://github.com/neo4j-graph-examples/pole.git
+    - https://github.com/neo4j-graph-examples/pole.git
 #    - https://github.com/neo4j-graph-examples/graph-data-science.git
 #    - https://github.com/neo4j-graph-examples/bloom.git
 #    - https://github.com/neo4j-graph-examples/icij-paradise-papers.git
