@@ -1,5 +1,7 @@
 = Sandbox Code Batch Updater
 
+image::https://github.com/neo4j-contrib/sandbox-code-updater/workflows/Sandbox%20Code%20Batch%20Updater%20CI/badge.svg[CI]
+
 == Scope
 
 The sandbox code batch updater is a Spring Boot application that watches a set of sandbox repositories and creates pull requests with sample code changes whenever necessary (typically via a CI pipeline).
