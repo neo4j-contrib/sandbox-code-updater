@@ -7,10 +7,15 @@ import java.util.Objects;
 public class PullRequest {
 
     private final String title;
+
     private final String description;
+
     private final boolean draft;
+
     private final boolean maintainersCanModify;
+
     private final String base;
+
     private final String branch;
 
     public PullRequest(String title,

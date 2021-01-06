@@ -16,7 +16,7 @@ import java.util.concurrent.Executor;
 
 public class TestHttpServer implements BeforeEachCallback, AfterEachCallback {
 
-    private HttpServer server;
+    private final HttpServer server;
 
     private TestHttpServer(InetSocketAddress inetSocketAddress) throws IOException {
         server = HttpServer.create(inetSocketAddress, 10);

@@ -6,7 +6,6 @@ import java.nio.file.Path;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.not;
 
 public class FakeNorthwindGit implements Git {
 

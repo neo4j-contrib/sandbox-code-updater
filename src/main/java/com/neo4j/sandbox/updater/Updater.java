@@ -1,7 +1,6 @@
 package com.neo4j.sandbox.updater;
 
 import com.neo4j.sandbox.git.Git;
-import com.neo4j.sandbox.git.RepositoryUrls;
 import com.neo4j.sandbox.github.GithubSettings;
 import com.neo4j.sandbox.updater.formatting.DefaultQueryFormatter;
 import com.neo4j.sandbox.updater.formatting.IndentDetector;
@@ -57,7 +56,6 @@ public class Updater {
      * @throws IOException if any of the underlying file operations fail
      */
     public List<Path> updateCodeExamples(Path templateLocation, Path cloneLocation, String repositoryUri) throws IOException {
-        String repositoryName = RepositoryUrls.repositoryName(repositoryUri);
         if (cloneLocation.toFile().exists()) {
             LOGGER.debug("Clone of {} already exists at location {}. Skipping git clone operation.", repositoryUri, cloneLocation);
         } else {
