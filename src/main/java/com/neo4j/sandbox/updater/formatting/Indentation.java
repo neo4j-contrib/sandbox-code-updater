@@ -5,7 +5,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Indentation {
+
     private final char symbol;
+
     private final int count;
 
     private Indentation(char symbol, int count) {

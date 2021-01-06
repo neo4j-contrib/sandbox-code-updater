@@ -14,7 +14,7 @@ public class DefaultQueryFormatter implements QueryFormatter {
     }
 
     private String indent(String code, String rawQuery) {
-        return new IndentDetector()
+        return indentDetector
                 .detect("MATCH (m:Movie", code)
                 .map(indentation -> indentation.indent(rawQuery))
                 .orElse(rawQuery);

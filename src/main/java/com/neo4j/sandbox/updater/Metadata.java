@@ -5,9 +5,13 @@ import java.util.Objects;
 public class Metadata {
 
     private final String query;
+
     private final String parameterName;
+
     private final String parameterValue;
+
     private final String resultColumn;
+
     private final String expectedResult;
 
     private Metadata(String query, String parameterName, String parameterValue, String resultColumn, String expectedResult) {

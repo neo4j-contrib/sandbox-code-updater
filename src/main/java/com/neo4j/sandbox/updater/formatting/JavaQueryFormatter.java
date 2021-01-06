@@ -42,7 +42,7 @@ public class JavaQueryFormatter implements QueryFormatter {
         }
         String firstLine = rawQuery.substring(0, firstNewlineIndex + 1);
         String rest = rawQuery.substring(firstNewlineIndex + 1);
-        return new IndentDetector()
+        return indentDetector
                 .detect("MATCH (m:Movie", code)
                 .map(indentation -> firstLine + indentation.indent(rest))
                 .orElse(rawQuery);

@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PullRequestResult {
 
     private final long id;
+
     private final String status;
 
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)

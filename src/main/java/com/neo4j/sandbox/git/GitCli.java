@@ -8,12 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class GitCli implements Git {
-
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitCli.class);
 

@@ -63,6 +63,7 @@ class GithubHttpClientIT {
     static class GithubPullRequestHandler implements ContextHttpHandler {
 
         private final String repositoryOwner;
+
         private final String repositoryName;
 
         public GithubPullRequestHandler(String repositoryOwner, String repositoryName) {

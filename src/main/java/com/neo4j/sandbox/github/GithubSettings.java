@@ -3,8 +3,6 @@ package com.neo4j.sandbox.github;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import java.nio.file.Path;
-
 @Configuration
 @ConfigurationProperties(prefix = "github")
 public class GithubSettings {
