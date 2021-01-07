@@ -2,10 +2,10 @@ package com.neo4j.sandbox.updater;
 
 import com.neo4j.sandbox.git.Git;
 import com.neo4j.sandbox.github.GithubSettings;
-import com.neo4j.sandbox.updater.formatting.DefaultQueryFormatter;
+import com.neo4j.sandbox.updater.formatting.DefaultQueryIndenter;
 import com.neo4j.sandbox.updater.formatting.IndentDetector;
-import com.neo4j.sandbox.updater.formatting.JavaQueryFormatter;
-import com.neo4j.sandbox.updater.formatting.QueryFormatter;
+import com.neo4j.sandbox.updater.formatting.JavaQueryIndenter;
+import com.neo4j.sandbox.updater.formatting.QueryIndenter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -87,25 +87,25 @@ public class Updater {
         return repositoryUri.replaceFirst("(https?)://", String.format("$1://%s@", githubSettings.getToken()));
     }
 
-    private QueryFormatter newQueryFormatter(String languageName) {
-        QueryFormatter queryFormatter;
+    private QueryIndenter newQueryFormatter(String languageName) {
+        QueryIndenter queryIndenter;
         IndentDetector indentDetector = new IndentDetector();
         if (languageName.equals("java")) {
-            queryFormatter = new JavaQueryFormatter(indentDetector);
+            queryIndenter = new JavaQueryIndenter(indentDetector);
         } else {
-            queryFormatter = new DefaultQueryFormatter(indentDetector);
+            queryIndenter = new DefaultQueryIndenter(indentDetector);
         }
-        return queryFormatter;
+        return queryIndenter;
     }
 
     private String substituteValues(Path sandboxRepositoryRootFolder,
                                     Path sourceExample,
-                                    QueryFormatter queryFormatter) throws IOException {
+                                    QueryIndenter queryIndenter) throws IOException {
 
         String code = Files.readString(sourceExample);
         try (FileReader readmeReader = new FileReader(sandboxRepositoryRootFolder.resolve("README.adoc").toFile())) {
             Metadata metadata = metadataReader.readMetadata(readmeReader);
-            String indentedQuery = queryFormatter.format(code, metadata.getQuery());
+            String indentedQuery = queryIndenter.indent(code, metadata.getQuery());
             code = code.replaceFirst("[^\\S\\n]*MATCH \\(m:Movie.*", Matcher.quoteReplacement(indentedQuery));
             code = code.replaceFirst("(?:neo4j|bolt)(?:\\+.{1,3})?://.*:\\d+", "bolt://<HOST>:<BOLTPORT>");
             code = code.replace("mUser", "<USERNAME>");
