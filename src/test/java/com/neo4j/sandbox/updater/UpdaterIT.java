@@ -60,8 +60,8 @@ class UpdaterIT {
                         "  auth=basic_auth(\"<USERNAME>\", \"<PASSWORD>\"))\n" +
                         "\n" +
                         "cypher_query = '''\n" +
-                        "MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\n" +
-                        "(:Category {categoryName:$category})\n" +
+                        "MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> \n" +
+                        "(:Category {categoryName:$category}) \n" +
                         "RETURN p.productName as product\n" +
                         "'''\n" +
                         "\n" +
@@ -102,8 +102,8 @@ class UpdaterIT {
                         "    try (Session session = driver.session(SessionConfig.forDatabase(\"neo4j\"))) {\n" +
                         "\n" +
                         "      String cypherQuery =\n" +
-                        "        \"MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\" +\n" +
-                        "        \"(:Category {categoryName:$category})\" +\n" +
+                        "        \"MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> \" +\n" +
+                        "        \"(:Category {categoryName:$category}) \" +\n" +
                         "        \"RETURN p.productName as product\";\n" +
                         "\n" +
                         "      var result = session.readTransaction(\n" +
@@ -148,8 +148,8 @@ class UpdaterIT {
                         "\n" +
                         "    var cypherQuery =\n" +
                         "      @\"\n" +
-                        "      MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\n" +
-                        "      (:Category {categoryName:$category})\n" +
+                        "      MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> \n" +
+                        "      (:Category {categoryName:$category}) \n" +
                         "      RETURN p.productName as product\n" +
                         "      \";\n" +
                         "\n" +
@@ -185,8 +185,8 @@ class UpdaterIT {
                         "\n" +
                         "const query =\n" +
                         "  `\n" +
-                        "  MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\n" +
-                        "  (:Category {categoryName:$category})\n" +
+                        "  MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> \n" +
+                        "  (:Category {categoryName:$category}) \n" +
                         "  RETURN p.productName as product\n" +
                         "  `;\n" +
                         "\n" +
