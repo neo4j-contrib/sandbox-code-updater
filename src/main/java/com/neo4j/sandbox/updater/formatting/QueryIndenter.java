@@ -1,6 +1,6 @@
 package com.neo4j.sandbox.updater.formatting;
 
-public interface QueryFormatter {
+public interface QueryIndenter {
 
-    String format(String initialCode, String newQuery);
+    String indent(String initialCode, String newQuery);
 }

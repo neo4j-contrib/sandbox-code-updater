@@ -1,17 +1,26 @@
 package com.neo4j.sandbox.updater.formatting;
 
-public class JavaQueryFormatter implements QueryFormatter {
+public class JavaQueryIndenter implements QueryIndenter {
 
     private final IndentDetector indentDetector;
 
-    public JavaQueryFormatter(IndentDetector indentDetector) {
+    public JavaQueryIndenter(IndentDetector indentDetector) {
         this.indentDetector = indentDetector;
     }
 
     @Override
-    public String format(String initialCode, String newQuery) {
+    public String indent(String initialCode, String newQuery) {
         String quotedString = quote(newQuery);
-        return indent(initialCode, quotedString);
+        int firstNewlineIndex = quotedString.indexOf("\n");
+        if (firstNewlineIndex == -1) {
+            return quotedString;
+        }
+        String firstLine = quotedString.substring(0, firstNewlineIndex + 1);
+        String rest = quotedString.substring(firstNewlineIndex + 1);
+        return indentDetector
+                .detect("MATCH (m:Movie", initialCode)
+                .map(indentation -> firstLine + indentation.indent(rest))
+                .orElse(quotedString);
     }
 
     private String quote(String indentedQuery) {
@@ -33,19 +42,5 @@ public class JavaQueryFormatter implements QueryFormatter {
             }
         }
         return result.toString();
-    }
-
-    private String indent(String code, String rawQuery) {
-        int firstNewlineIndex = rawQuery.indexOf("\n");
-        if (firstNewlineIndex == -1) {
-            return rawQuery;
-        }
-        String firstLine = rawQuery.substring(0, firstNewlineIndex + 1);
-        String rest = rawQuery.substring(firstNewlineIndex + 1);
-        return indentDetector
-                .detect("MATCH (m:Movie", code)
-                .map(indentation -> firstLine + indentation.indent(rest))
-                .orElse(rawQuery);
-
     }
 }
