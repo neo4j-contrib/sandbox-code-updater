@@ -50,7 +50,7 @@ public class MetadataReader {
     }
 
     private String processQueryLine(String line) {
-        String strippedLine = line.replace(":query: ", "").trim();
-        return strippedLine.substring(0, strippedLine.length() - "+".length()).trim();
+        String strippedLine = line.replace(":query: ", "").replaceAll("^\\s+", "");
+        return strippedLine.substring(0, strippedLine.length() - "+".length());
     }
 }
