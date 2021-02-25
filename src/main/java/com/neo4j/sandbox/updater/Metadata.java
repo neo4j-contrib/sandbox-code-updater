@@ -14,16 +14,12 @@ public class Metadata {
 
     private final String expectedResult;
 
-    private Metadata(String query, String parameterName, String parameterValue, String resultColumn, String expectedResult) {
+    public Metadata(String query, String parameterName, String parameterValue, String resultColumn, String expectedResult) {
         this.query = query;
         this.parameterName = parameterName;
         this.parameterValue = parameterValue;
         this.resultColumn = resultColumn;
         this.expectedResult = expectedResult;
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public String getQuery() {
@@ -63,42 +59,14 @@ public class Metadata {
         return Objects.hash(query, parameterName, parameterValue, resultColumn, expectedResult);
     }
 
-    static class Builder {
-
-        private String query;
-        private String parameterName;
-        private String parameterValue;
-        private String resultColumn;
-        private String expectedResult;
-
-        public void setQuery(String query) {
-            this.query = query;
-        }
-
-        public void setParameterName(String parameterName) {
-            this.parameterName = parameterName;
-        }
-
-        public void setParameterValue(String parameterValue) {
-            this.parameterValue = parameterValue;
-        }
-
-        public void setResultColumn(String resultColumn) {
-            this.resultColumn = resultColumn;
-        }
-
-        public void setExpectedResult(String expectedResult) {
-            this.expectedResult = expectedResult;
-        }
-
-        public Metadata build() {
-            return new Metadata(
-                    query,
-                    parameterName,
-                    parameterValue,
-                    resultColumn,
-                    expectedResult
-            );
-        }
+    @Override
+    public String toString() {
+        return "Metadata{" +
+                "query='" + query + '\'' +
+                ", parameterName='" + parameterName + '\'' +
+                ", parameterValue='" + parameterValue + '\'' +
+                ", resultColumn='" + resultColumn + '\'' +
+                ", expectedResult='" + expectedResult + '\'' +
+                '}';
     }
 }

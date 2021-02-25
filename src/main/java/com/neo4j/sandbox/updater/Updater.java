@@ -104,7 +104,7 @@ public class Updater {
 
         String code = Files.readString(sourceExample);
         try (FileReader readmeReader = new FileReader(sandboxRepositoryRootFolder.resolve("README.adoc").toFile())) {
-            Metadata metadata = metadataReader.readMetadata(readmeReader);
+            Metadata metadata = metadataReader.read(readmeReader);
             String indentedQuery = queryIndenter.indent(code, metadata.getQuery());
             code = code.replaceFirst("[^\\S\\n]*MATCH \\(m:Movie.*", Matcher.quoteReplacement(indentedQuery));
             code = code.replaceFirst("(?:neo4j|bolt)(?:\\+.{1,3})?://.*:\\d+", "bolt://<HOST>:<BOLTPORT>");

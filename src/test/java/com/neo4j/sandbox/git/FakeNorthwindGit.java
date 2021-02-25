@@ -21,14 +21,13 @@ public class FakeNorthwindGit implements Git {
         assertThat(pythonCodeFolder.toFile().mkdirs())
                 .overridingErrorMessage("could not create sandbox file tree")
                 .isTrue();
-        Files.write(tempDir.resolve("README.adoc"), (":name: northwind\n" +
-                ":query: MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> +\n" +
-                " (:Category {categoryName:$category}) +\n" +
-                " RETURN p.productName as product +\n" +
-                ":param-name: category\n" +
-                ":param-value: Dairy Products\n" +
-                ":result-column: product\n" +
-                ":expected-result: Geitost").getBytes(UTF_8));
+        Files.write(tempDir.resolve("README.adoc"), (
+                        "[source,cypher,role=query-example,param-name=category,param-value=Dairy Products,result-column=product,expected-result=Geitost]\n" +
+                        "----\n" +
+                        "MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\n" +
+                        " (:Category {categoryName:$category})\n" +
+                        " RETURN p.productName as product\n" +
+                        "----").getBytes(UTF_8));
         Files.write(pythonCodeFolder.resolve("example.py"), ("" +
                 "# pip3 install neo4j-driver\n" +
                 "# python3 example.py\n" +
