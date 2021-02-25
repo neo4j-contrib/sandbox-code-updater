@@ -3,7 +3,7 @@ package com.neo4j.sandbox.git;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public interface Git {
+public interface GitOperations {
 
     void clone(Path cloneLocation, String repositoryUri) throws IOException;
 

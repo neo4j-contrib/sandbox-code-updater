@@ -2,7 +2,7 @@ package com.neo4j.sandbox.updater;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neo4j.sandbox.git.CommitException;
-import com.neo4j.sandbox.git.Git;
+import com.neo4j.sandbox.git.GitOperations;
 import com.neo4j.sandbox.git.PushException;
 import com.neo4j.sandbox.github.CommitMessageFormatter;
 import com.neo4j.sandbox.github.ExecutionContext;
@@ -34,7 +34,7 @@ public class BatchUpdaterTest {
 
     private final Updater updater = mock(Updater.class);
 
-    private final Git git = mock(Git.class);
+    private final GitOperations git = mock(GitOperations.class);
 
     private final Github github = mock(Github.class);
 
