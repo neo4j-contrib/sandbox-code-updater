@@ -1,7 +1,7 @@
 package com.neo4j.sandbox.updater;
 
 import com.neo4j.sandbox.git.CommitException;
-import com.neo4j.sandbox.git.Git;
+import com.neo4j.sandbox.git.GitOperations;
 import com.neo4j.sandbox.git.PushException;
 import com.neo4j.sandbox.github.CommitMessageFormatter;
 import com.neo4j.sandbox.github.Github;
@@ -29,7 +29,7 @@ public class BatchUpdater {
 
     private final Updater updater;
 
-    private final Git git;
+    private final GitOperations git;
 
     private final Github github;
 
@@ -37,7 +37,7 @@ public class BatchUpdater {
 
     public BatchUpdater(BatchUpdaterSettings settings,
                         Updater updater,
-                        Git git,
+                        GitOperations git,
                         Github github,
                         CommitMessageFormatter commitMessageFormatter) {
 

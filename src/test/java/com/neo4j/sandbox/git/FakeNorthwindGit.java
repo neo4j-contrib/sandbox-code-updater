@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FakeNorthwindGit implements Git {
+public class FakeNorthwindGit implements GitOperations {
 
     private final Path tempDir;
 

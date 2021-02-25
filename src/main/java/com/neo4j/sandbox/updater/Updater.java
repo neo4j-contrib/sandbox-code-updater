@@ -1,6 +1,6 @@
 package com.neo4j.sandbox.updater;
 
-import com.neo4j.sandbox.git.Git;
+import com.neo4j.sandbox.git.GitOperations;
 import com.neo4j.sandbox.github.GithubSettings;
 import com.neo4j.sandbox.updater.formatting.DefaultQueryIndenter;
 import com.neo4j.sandbox.updater.formatting.IndentDetector;
@@ -24,13 +24,13 @@ public class Updater {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Updater.class);
 
-    private final Git cloner;
+    private final GitOperations cloner;
 
     private final MetadataReader metadataReader;
 
     private final GithubSettings githubSettings;
 
-    public Updater(Git cloner,
+    public Updater(GitOperations cloner,
                    MetadataReader metadataReader,
                    GithubSettings githubSettings) {
 
