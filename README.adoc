@@ -10,7 +10,8 @@ NOTE: Sandboxes typically live in https://github.com/neo4j-graph-examples/ and f
 These samples need to be regularly updated to keep up with the driver changes.
 
 The samples are declined in all the languages that the Neo4j Drivers officially support.
-They are based on https://github.com/neo4j-graph-examples/template/tree/master/code[the code samples versioned here] and tailored to every sandbox, based on the metadata they each define in their README files (via Asciidoc attributes).
+They are based on https://github.com/neo4j-graph-examples/template/tree/master/code[the code samples versioned here] and tailored to every sandbox,
+based on the metadata they each define in their README files (via a specific Asciidoc code listing).
 
 == Prerequisites
 

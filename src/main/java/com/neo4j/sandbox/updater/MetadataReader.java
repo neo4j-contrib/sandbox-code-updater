@@ -1,56 +1,59 @@
 package com.neo4j.sandbox.updater;
 
+import org.asciidoctor.Asciidoctor;
+import org.asciidoctor.ast.Block;
+import org.asciidoctor.ast.Document;
+import org.asciidoctor.ast.StructuralNode;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class MetadataReader {
 
-    public Metadata readMetadata(Reader path) throws IOException {
-        Metadata.Builder result = Metadata.builder();
-        List<String> lines = readContents(path);
-        for (Iterator<String> iterator = lines.iterator(); iterator.hasNext(); ) {
-            String line = iterator.next();
-            if (line.startsWith(":query:")) {
-                StringBuilder queryBuilder = new StringBuilder();
-                while (line.trim().endsWith("+")) {
-                    queryBuilder.append(processQueryLine(line));
-                    queryBuilder.append("\n");
-                    if (!iterator.hasNext()) {
-                        break;
-                    }
-                    line = iterator.next();
-                }
-                String query = queryBuilder.toString().trim();
-                result.setQuery(query);
-            }
-            if (line.startsWith(":param-name:")) {
-                result.setParameterName(line.substring(":param-name:".length()).trim());
-            } else if (line.startsWith(":param-value:")) {
-                result.setParameterValue(line.substring(":param-value:".length()).trim());
-            } else if (line.startsWith(":result-column:")) {
-                result.setResultColumn(line.substring(":result-column:".length()).trim());
-            } else if (line.startsWith(":expected-result:")) {
-                result.setExpectedResult(line.substring(":expected-result:".length()).trim());
-            }
-        }
-        return result.build();
+    private static final String ROLE_FILTER = "query-example";
+
+    private final Asciidoctor parser;
+
+    public MetadataReader(Asciidoctor parser) {
+        this.parser = parser;
     }
 
-    private List<String> readContents(Reader path) throws IOException {
+    public Metadata read(Reader path) throws IOException {
+        Document document = parser.load(readContents(path), Collections.emptyMap());
+        List<StructuralNode> nodes = document.findBy(nodeFilters(":listing", ROLE_FILTER));
+        int size = nodes.size();
+        if (size != 1) {
+            throw new IllegalArgumentException(
+                    String.format("Expected exactly 1 Cypher source listing with \"query-example\" role: %d found.", size));
+        }
+        Block codeBlock = (Block) nodes.iterator().next();
+        return new Metadata(
+                String.join("\n", codeBlock.getLines()),
+                (String) codeBlock.getAttribute("param-name"),
+                (String) codeBlock.getAttribute("param-value"),
+                (String) codeBlock.getAttribute("result-column"),
+                (String) codeBlock.getAttribute("expected-result")
+        );
+    }
+
+    private static String readContents(Reader path) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(path)) {
-            return bufferedReader.lines().collect(Collectors.toList());
+            return bufferedReader.lines().collect(Collectors.joining("\n"));
         }
     }
 
-    private String processQueryLine(String line) {
-        String strippedLine = line.replace(":query: ", "").replaceAll("^\\s+", "");
-        return strippedLine.substring(0, strippedLine.length() - "+".length());
+    private static Map<Object, Object> nodeFilters(String context, String role) {
+        Map<Object, Object> selectors = new HashMap<>(2);
+        selectors.put("context", context);
+        selectors.put("role", role);
+        return selectors;
     }
 }

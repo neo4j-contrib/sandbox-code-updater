@@ -2,11 +2,11 @@ package com.neo4j.sandbox.updater;
 
 import com.neo4j.sandbox.git.FakeNorthwindGit;
 import com.neo4j.sandbox.github.GithubSettings;
+import org.asciidoctor.Asciidoctor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -21,11 +21,11 @@ class UpdaterIT {
     private Updater updater;
 
     @BeforeEach
-    void prepare(@TempDir Path tempDir) throws URISyntaxException {
+    void prepare(@TempDir Path tempDir) {
         sandboxCloneLocation = tempDir.resolve("northwind");
         updater = new Updater(
                 new FakeNorthwindGit(sandboxCloneLocation),
-                new MetadataReader(),
+                new MetadataReader(Asciidoctor.Factory.create()),
                 new GithubSettings()
         );
     }
@@ -60,9 +60,9 @@ class UpdaterIT {
                         "  auth=basic_auth(\"<USERNAME>\", \"<PASSWORD>\"))\n" +
                         "\n" +
                         "cypher_query = '''\n" +
-                        "MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> \n" +
-                        "(:Category {categoryName:$category}) \n" +
-                        "RETURN p.productName as product\n" +
+                        "MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\n" +
+                        " (:Category {categoryName:$category})\n" +
+                        " RETURN p.productName as product\n" +
                         "'''\n" +
                         "\n" +
                         "with driver.session(database=\"neo4j\") as session:\n" +
@@ -102,9 +102,9 @@ class UpdaterIT {
                         "    try (Session session = driver.session(SessionConfig.forDatabase(\"neo4j\"))) {\n" +
                         "\n" +
                         "      String cypherQuery =\n" +
-                        "        \"MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> \" +\n" +
-                        "        \"(:Category {categoryName:$category}) \" +\n" +
-                        "        \"RETURN p.productName as product\";\n" +
+                        "        \"MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\" +\n" +
+                        "        \" (:Category {categoryName:$category})\" +\n" +
+                        "        \" RETURN p.productName as product\";\n" +
                         "\n" +
                         "      var result = session.readTransaction(\n" +
                         "        tx -> tx.run(cypherQuery, \n" +
@@ -148,9 +148,9 @@ class UpdaterIT {
                         "\n" +
                         "    var cypherQuery =\n" +
                         "      @\"\n" +
-                        "      MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> \n" +
-                        "      (:Category {categoryName:$category}) \n" +
-                        "      RETURN p.productName as product\n" +
+                        "      MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\n" +
+                        "       (:Category {categoryName:$category})\n" +
+                        "       RETURN p.productName as product\n" +
                         "      \";\n" +
                         "\n" +
                         "    var session = driver.AsyncSession(o => o.WithDatabase(\"neo4j\"));\n" +
@@ -185,9 +185,9 @@ class UpdaterIT {
                         "\n" +
                         "const query =\n" +
                         "  `\n" +
-                        "  MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]-> \n" +
-                        "  (:Category {categoryName:$category}) \n" +
-                        "  RETURN p.productName as product\n" +
+                        "  MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\n" +
+                        "   (:Category {categoryName:$category})\n" +
+                        "   RETURN p.productName as product\n" +
                         "  `;\n" +
                         "\n" +
                         "const params = {\"category\": \"Dairy Products\"};\n" +
