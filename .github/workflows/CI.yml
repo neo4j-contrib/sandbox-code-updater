@@ -57,5 +57,21 @@ jobs:
         GITHUB_USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
         SANDBOX_CODE_SAMPLES_PATH: ${{ github.workspace }}/template
+#        SANDBOX_REPOSITORIES_1: https://github.com/neo4j-graph-examples/pole.git
+#        SANDBOX_REPOSITORIES_2: https://github.com/neo4j-graph-examples/graph-data-science.git
+#        SANDBOX_REPOSITORIES_3: https://github.com/neo4j-graph-examples/bloom.git
+#        SANDBOX_REPOSITORIES_4: https://github.com/neo4j-graph-examples/icij-paradise-papers.git
+#        SANDBOX_REPOSITORIES_5: https://github.com/neo4j-graph-examples/northwind.git
+#        SANDBOX_REPOSITORIES_6: https://github.com/neo4j-graph-examples/twitter-trolls.git
+#        SANDBOX_REPOSITORIES_7: https://github.com/neo4j-graph-examples/fraud-detection.git
+#        SANDBOX_REPOSITORIES_8: https://github.com/neo4j-graph-examples/fincen.git
+#        SANDBOX_REPOSITORIES_9: https://github.com/neo4j-graph-examples/contact-tracing.git
+#        SANDBOX_REPOSITORIES_10: https://github.com/neo4j-graph-examples/movies.git
+#        SANDBOX_REPOSITORIES_11: https://github.com/neo4j-graph-examples/icij-panama-papers.git
+#        SANDBOX_REPOSITORIES_12: https://github.com/neo4j-graph-examples/recommendations.git
+#        SANDBOX_REPOSITORIES_13: https://github.com/neo4j-graph-examples/wwc2019.git
+#        SANDBOX_REPOSITORIES_14: https://github.com/neo4j-graph-examples/legis-graph.git
+#        SANDBOX_REPOSITORIES_15: https://github.com/neo4j-graph-examples/network-management.git
+#        SANDBOX_REPOSITORIES_16: https://github.com/neo4j-graph-examples/blank-sandbox
       run: >
         mvn --show-version --batch-mode spring-boot:run -Dspring-boot.run.arguments=--logging.level.com.neo4j=TRACE
