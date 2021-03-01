@@ -15,7 +15,8 @@ sandbox:
     - https://github.com/neo4j-graph-examples/wwc2019.git
     - https://github.com/neo4j-graph-examples/legis-graph.git
     - https://github.com/neo4j-graph-examples/network-management.git
-    - https://github.com/neo4j-graph-examples/blank-sandbox
+    - https://github.com/neo4j-graph-examples/blank-sandbox.git
+    - https://github.com/neo4j-graph-examples/citations.git
   code-samples-path:
 github:
   address: https://api.github.com
