@@ -3,6 +3,7 @@ package com.neo4j.sandbox.updater;
 import com.neo4j.sandbox.git.CommitException;
 import com.neo4j.sandbox.git.Git;
 import com.neo4j.sandbox.git.PushException;
+import com.neo4j.sandbox.github.CommitMessageFormatter;
 import com.neo4j.sandbox.github.Github;
 import com.neo4j.sandbox.github.PullRequest;
 import org.slf4j.Logger;
@@ -32,14 +33,19 @@ public class BatchUpdater {
 
     private final Github github;
 
+    private final CommitMessageFormatter commitMessageFormatter;
+
     public BatchUpdater(BatchUpdaterSettings settings,
                         Updater updater,
                         Git git,
-                        Github github) {
+                        Github github,
+                        CommitMessageFormatter commitMessageFormatter) {
+
         this.settings = settings;
         this.updater = updater;
         this.git = git;
         this.github = github;
+        this.commitMessageFormatter = commitMessageFormatter;
     }
 
     /**
@@ -91,7 +97,7 @@ public class BatchUpdater {
         String repositoryName = repositoryName(repositoryUri);
         String baseBranch = git.currentBranch(cloneLocation);
         git.checkoutNewBranch(cloneLocation, branch);
-        git.commitAll(cloneLocation, String.format("Updating sandbox %s", repositoryName));
+        git.commitAll(cloneLocation, commitMessageFormatter.createMessage());
         git.push(cloneLocation, "origin", branch);
         LOGGER.debug("About to open pull request against {} branch", baseBranch);
         github.openPullRequest(
@@ -138,4 +144,5 @@ public class BatchUpdater {
     private static String indent(String content) {
         return content.replaceAll("\n", "\n\t");
     }
+
 }

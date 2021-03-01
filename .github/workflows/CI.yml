@@ -4,7 +4,7 @@ on:
   push:
     branches: [ 'main' ]
   pull_request:
-    branches: [ '**' ]
+    branches: [ 'main' ]
   repository_dispatch:
     types: [ 'template-code-changes' ]
 
@@ -57,5 +57,8 @@ jobs:
         GITHUB_USERNAME: ${{ secrets.USERNAME }}
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
         SANDBOX_CODE_SAMPLES_PATH: ${{ github.workspace }}/template
+        # the workflow has been triggered either by an event dispatch (DISPATCH_CONTEXT) or a regular commit (COMMIT)
+        CONTEXT_DISPATCH: ${{ github.event.client_payload }}
+        CONTEXT_COMMIT: ${{ github.sha }}
       run: >
         mvn --show-version --batch-mode spring-boot:run -Dspring-boot.run.arguments=--logging.level.com.neo4j=TRACE
