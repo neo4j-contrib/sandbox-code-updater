@@ -1,8 +1,11 @@
 package com.neo4j.sandbox.updater;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neo4j.sandbox.git.CommitException;
 import com.neo4j.sandbox.git.Git;
 import com.neo4j.sandbox.git.PushException;
+import com.neo4j.sandbox.github.CommitMessageFormatter;
+import com.neo4j.sandbox.github.ExecutionContext;
 import com.neo4j.sandbox.github.Github;
 import com.neo4j.sandbox.github.PullRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +30,8 @@ import static org.mockito.Mockito.when;
 
 public class BatchUpdaterTest {
 
+    private static final String COMMIT_REF = "fb54ab27ba6ec42ad5e4bbf4e0bf4506184d3463";
+
     private final Updater updater = mock(Updater.class);
 
     private final Git git = mock(Git.class);
@@ -41,7 +46,8 @@ public class BatchUpdaterTest {
             ),
             updater,
             git,
-            github
+            github,
+            new CommitMessageFormatter(mock(ObjectMapper.class), directCommitContext(COMMIT_REF))
     );
 
     @BeforeEach
@@ -106,7 +112,10 @@ public class BatchUpdaterTest {
         String branchPrefix = String.format("%s-", repositoryName);
         inOrder.verify(git).currentBranch(any(Path.class));
         inOrder.verify(git).checkoutNewBranch(any(Path.class), startsWith(branchPrefix));
-        inOrder.verify(git).commitAll(any(Path.class), eq(String.format("Updating sandbox %s", repositoryName)));
+        inOrder.verify(git).commitAll(any(Path.class),
+                eq(String.format(
+                        "Triggered by direct commit. Origin: https://github.com/neo4j-contrib/sandbox-code-updater/commit/%s",
+                        COMMIT_REF)));
         inOrder.verify(git).push(any(Path.class), eq("origin"), startsWith(branchPrefix));
 
         ArgumentCaptor<PullRequest> pullRequestCaptor = ArgumentCaptor.forClass(PullRequest.class);
@@ -120,10 +129,17 @@ public class BatchUpdaterTest {
         assertThat(pullRequest.getBranch()).startsWith(branchPrefix);
     }
 
-    private BatchUpdaterSettings settings(String... urls) {
+    private static BatchUpdaterSettings settings(String... urls) {
         BatchUpdaterSettings settings = new BatchUpdaterSettings();
         settings.setRepositories(Arrays.asList(urls));
         settings.setCodeSamplesPath(templateRepositoryPath());
         return settings;
+    }
+
+    private static ExecutionContext directCommitContext(String sha) {
+        ExecutionContext context = new ExecutionContext();
+        context.setCommit(sha);
+        context.setDispatch("");
+        return context;
     }
 }
