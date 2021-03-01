@@ -27,7 +27,7 @@ public class CommitMessageFormatter {
         LOGGER.debug("Execution context: {}", context);
 
         String dispatch = context.getDispatch();
-        if (!dispatch.isBlank()) {
+        if (isSet(dispatch)) {
             DispatchContext dispatchContext = deserialize(dispatch);
             return String.format("Triggered by dispatch event. Origin: https://github.com/%s/commit/%s",
                     dispatchContext.getSourceRepository(),
@@ -49,5 +49,11 @@ public class CommitMessageFormatter {
             throw new IllegalArgumentException(
                     "Could not deserialize dispatch context when creating commit message", e);
         }
+    }
+
+    // quick fix to work around GitHub built-in toJson function that prints null like this
+    // see https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#tojson
+    private boolean isSet(String dispatch) {
+        return !dispatch.isBlank() && !dispatch.equals("null");
     }
 }

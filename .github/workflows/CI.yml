@@ -58,7 +58,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
         SANDBOX_CODE_SAMPLES_PATH: ${{ github.workspace }}/template
         # the workflow has been triggered either by an event dispatch (DISPATCH_CONTEXT) or a regular commit (COMMIT)
-        CONTEXT_DISPATCH: ${{ github.event.client_payload }}
+        CONTEXT_DISPATCH: ${{ toJson(github.event.client_payload) }}
         CONTEXT_COMMIT: ${{ github.sha }}
       run: >
         mvn --show-version --batch-mode spring-boot:run -Dspring-boot.run.arguments=--logging.level.com.neo4j=TRACE
