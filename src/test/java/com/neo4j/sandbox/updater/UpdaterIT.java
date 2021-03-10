@@ -102,8 +102,8 @@ class UpdaterIT {
                         "    try (Session session = driver.session(SessionConfig.forDatabase(\"neo4j\"))) {\n" +
                         "\n" +
                         "      String cypherQuery =\n" +
-                        "        \"MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\" +\n" +
-                        "        \" (:Category {categoryName:$category})\" +\n" +
+                        "        \"MATCH (p:Product)-[:PART_OF]->(:Category)-[:PARENT*0..]->\\n\" +\n" +
+                        "        \" (:Category {categoryName:$category})\\n\" +\n" +
                         "        \" RETURN p.productName as product\";\n" +
                         "\n" +
                         "      var result = session.readTransaction(\n" +
