@@ -88,14 +88,11 @@ public class Updater {
     }
 
     private QueryIndenter newQueryFormatter(String languageName) {
-        QueryIndenter queryIndenter;
         IndentDetector indentDetector = new IndentDetector();
         if (languageName.equals("java")) {
-            queryIndenter = new JavaQueryIndenter(indentDetector);
-        } else {
-            queryIndenter = new DefaultQueryIndenter(indentDetector);
+            return new JavaQueryIndenter(indentDetector);
         }
-        return queryIndenter;
+        return new DefaultQueryIndenter(indentDetector);
     }
 
     private String substituteValues(Path sandboxRepositoryRootFolder,

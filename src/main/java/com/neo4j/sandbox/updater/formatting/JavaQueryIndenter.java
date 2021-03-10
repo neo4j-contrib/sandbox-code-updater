@@ -25,7 +25,7 @@ public class JavaQueryIndenter implements QueryIndenter {
 
     private String quote(String indentedQuery) {
         String prefix = "\"";
-        String intermediateLineSuffix = "\" +";
+        String intermediateLineSuffix = "\\n\" +";
         String finalSuffix = "\";";
         String[] lines = indentedQuery.split("\n");
         StringBuilder result = new StringBuilder();
