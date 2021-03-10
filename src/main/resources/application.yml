@@ -17,6 +17,7 @@ sandbox:
     - https://github.com/neo4j-graph-examples/network-management.git
     - https://github.com/neo4j-graph-examples/blank-sandbox
     - https://github.com/neo4j-graph-examples/twitter.git
+    - https://github.com/neo4j-graph-examples/openstreetmap.git
   code-samples-path:
 github:
   address: https://api.github.com
