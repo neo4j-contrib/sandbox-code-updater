@@ -1,7 +1,7 @@
 package com.neo4j.sandbox.updater;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neo4j.sandbox.git.CommitException;
+import com.neo4j.sandbox.git.BlankCommitException;
 import com.neo4j.sandbox.git.GitOperations;
 import com.neo4j.sandbox.git.PushException;
 import com.neo4j.sandbox.github.CommitMessageFormatter;
@@ -92,7 +92,7 @@ public class BatchUpdaterTest {
     @Test
     void ignores_when_commits_fails() throws IOException {
         when(updater.updateCodeExamples(any(Path.class), any(Path.class), eq("https://example.com/sandbox/number-3")))
-                .thenThrow(new CommitException(new IOException("oopsie")));
+                .thenThrow(new BlankCommitException(new IOException("oopsie")));
 
         assertThatCode(batchUpdater::updateBatch).doesNotThrowAnyException();
     }
