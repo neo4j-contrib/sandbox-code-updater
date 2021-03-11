@@ -1,6 +1,6 @@
 package com.neo4j.sandbox.updater;
 
-import com.neo4j.sandbox.git.CommitException;
+import com.neo4j.sandbox.git.BlankCommitException;
 import com.neo4j.sandbox.git.GitOperations;
 import com.neo4j.sandbox.git.PushException;
 import com.neo4j.sandbox.github.CommitMessageFormatter;
@@ -78,9 +78,9 @@ public class BatchUpdater {
                 List<Path> updatedFiles = updater.updateCodeExamples(settings.getCodeSamplesPath(), cloneLocation, repositoryUri);
                 branch = generateConsistentBranchName(repositoryName(repositoryUri), updatedFiles);
                 createPullRequest(repositoryUri, cloneLocation, branch);
-            } catch (CommitException exception) {
+            } catch (BlankCommitException exception) {
                 LOGGER.info("Could not update sandbox {} as git commit failed. " +
-                        "This is likely due to the fact there is nothing to update. Skipping the update. " +
+                        "This is due to the fact there is nothing to update. Skipping the update. " +
                         "See details below:\n {}", repositoryUri, exception.getMessage());
             } catch (PushException exception) {
                 if (failedPushingExistingBranch(exception)) {

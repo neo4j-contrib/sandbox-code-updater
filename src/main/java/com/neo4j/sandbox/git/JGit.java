@@ -1,6 +1,7 @@
 package com.neo4j.sandbox.git;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.EmptyCommitException;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -34,13 +35,20 @@ public class JGit implements GitOperations {
 
     @Override
     public void commitAll(Path cloneLocation, String message) throws IOException {
-        execute(() ->
-                repository(cloneLocation)
-                        .commit()
-                        .setAllowEmpty(false)
-                        .setAll(true)
-                        .setMessage(message)
-                        .call());
+        try {
+            execute(() ->
+                    repository(cloneLocation)
+                            .commit()
+                            .setAllowEmpty(false)
+                            .setAll(true)
+                            .setMessage(message)
+                            .call());
+        } catch (IOException exception) {
+            if (exception.getCause() instanceof EmptyCommitException) {
+                throw new BlankCommitException(exception);
+            }
+            throw exception;
+        }
     }
 
     @Override
