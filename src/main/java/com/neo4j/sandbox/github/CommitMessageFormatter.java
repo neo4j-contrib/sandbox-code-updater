@@ -54,6 +54,6 @@ public class CommitMessageFormatter {
     // quick fix to work around GitHub built-in toJson function that prints null like this
     // see https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#tojson
     private boolean isSet(String dispatch) {
-        return !dispatch.isBlank() && !dispatch.equals("null");
+        return dispatch != null && !dispatch.equals("") && !dispatch.equals("null");
     }
 }
