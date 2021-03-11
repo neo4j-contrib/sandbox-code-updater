@@ -7,6 +7,7 @@ import com.neo4j.sandbox.git.PushException;
 import com.neo4j.sandbox.github.CommitMessageFormatter;
 import com.neo4j.sandbox.github.ExecutionContext;
 import com.neo4j.sandbox.github.Github;
+import com.neo4j.sandbox.github.GithubSettings;
 import com.neo4j.sandbox.github.PullRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ public class BatchUpdaterTest {
     private final Github github = mock(Github.class);
 
     private final BatchUpdater batchUpdater = new BatchUpdater(
-            settings(
+            batchSettings(
                     "https://example.com/sandbox/number-1",
                     "https://example.com/sandbox/number-2",
                     "https://example.com/sandbox/number-3"
@@ -47,7 +48,8 @@ public class BatchUpdaterTest {
             updater,
             git,
             github,
-            new CommitMessageFormatter(mock(ObjectMapper.class), directCommitContext(COMMIT_REF))
+            new CommitMessageFormatter(mock(ObjectMapper.class), directCommitContext(COMMIT_REF)),
+            githubSettings("some-token")
     );
 
     @BeforeEach
@@ -116,7 +118,7 @@ public class BatchUpdaterTest {
                 eq(String.format(
                         "Triggered by direct commit. Origin: https://github.com/neo4j-contrib/sandbox-code-updater/commit/%s",
                         COMMIT_REF)));
-        inOrder.verify(git).push(any(Path.class), eq("origin"), startsWith(branchPrefix));
+        inOrder.verify(git).push(any(Path.class), eq("some-token"), eq("origin"), startsWith(branchPrefix));
 
         ArgumentCaptor<PullRequest> pullRequestCaptor = ArgumentCaptor.forClass(PullRequest.class);
         inOrder.verify(github).openPullRequest(eq("sandbox"), eq(repositoryName), pullRequestCaptor.capture());
@@ -129,11 +131,17 @@ public class BatchUpdaterTest {
         assertThat(pullRequest.getBranch()).startsWith(branchPrefix);
     }
 
-    private static BatchUpdaterSettings settings(String... urls) {
+    private static BatchUpdaterSettings batchSettings(String... urls) {
         BatchUpdaterSettings settings = new BatchUpdaterSettings();
         settings.setRepositories(Arrays.asList(urls));
         settings.setCodeSamplesPath(templateRepositoryPath());
         return settings;
+    }
+
+    private static GithubSettings githubSettings(String token) {
+        GithubSettings githubSettings = new GithubSettings();
+        githubSettings.setToken(token);
+        return githubSettings;
     }
 
     private static ExecutionContext directCommitContext(String sha) {

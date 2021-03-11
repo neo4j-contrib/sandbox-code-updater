@@ -1,7 +1,9 @@
 package com.neo4j.sandbox.git;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,9 +14,10 @@ import java.util.concurrent.Callable;
 public class JGit implements GitOperations {
 
     @Override
-    public void clone(Path cloneLocation, String repositoryUri) throws IOException {
+    public void clone(Path cloneLocation, String repositoryUri, String token) throws IOException {
         execute(() ->
                 Git.cloneRepository()
+                        .setCredentialsProvider(credentials(token))
                         .setDirectory(cloneLocation.toFile())
                         .setURI(repositoryUri)
                         .call());
@@ -40,10 +43,11 @@ public class JGit implements GitOperations {
     }
 
     @Override
-    public void push(Path cloneLocation, String remote, String branch) throws IOException {
+    public void push(Path cloneLocation, String token, String remote, String branch) throws IOException {
         execute(() ->
                 repository(cloneLocation)
                         .push()
+                        .setCredentialsProvider(credentials(token))
                         .setRemote(remote)
                         .setRefSpecs(new RefSpec(branch))
                         .call());
@@ -56,6 +60,12 @@ public class JGit implements GitOperations {
                 .getBranch()
         );
 
+    }
+
+    private static CredentialsProvider credentials(String token) {
+        return token == null ?
+                null :
+                new UsernamePasswordCredentialsProvider(token, "");
     }
 
     private static Git repository(Path cloneLocation) throws IOException {

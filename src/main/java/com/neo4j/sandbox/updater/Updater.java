@@ -60,7 +60,7 @@ public class Updater {
             LOGGER.debug("Clone of {} already exists at location {}. Skipping git clone operation.", repositoryUri, cloneLocation);
         } else {
             LOGGER.trace("About to clone {} at {}.", repositoryUri, cloneLocation);
-            this.cloner.clone(cloneLocation, withToken(repositoryUri));
+            this.cloner.clone(cloneLocation, repositoryUri, githubSettings.getToken());
         }
 
         LOGGER.trace("About to update samples based on {} code.", templateLocation);
@@ -80,11 +80,6 @@ public class Updater {
             generatedFiles.add(sandboxExample);
         }
         return generatedFiles;
-    }
-
-    // with this one weird trick, authentication works in Github Action
-    private String withToken(String repositoryUri) {
-        return repositoryUri.replaceFirst("(https?)://", String.format("$1://%s@", githubSettings.getToken()));
     }
 
     private QueryIndenter newQueryFormatter(String languageName) {

@@ -16,7 +16,7 @@ public class FakeNorthwindGit implements GitOperations {
     }
 
     @Override
-    public void clone(Path destinationDirectory, String uri) throws IOException {
+    public void clone(Path destinationDirectory, String uri, String token) throws IOException {
         Path pythonCodeFolder = tempDir.resolve("code").resolve("python");
         assertThat(pythonCodeFolder.toFile().mkdirs())
                 .overridingErrorMessage("could not create sandbox file tree")
@@ -66,7 +66,7 @@ public class FakeNorthwindGit implements GitOperations {
     }
 
     @Override
-    public void push(Path cloneLocation, String remote, String branch) {
+    public void push(Path cloneLocation, String token, String remote, String branch) {
         throw notImplemented();
     }
 
