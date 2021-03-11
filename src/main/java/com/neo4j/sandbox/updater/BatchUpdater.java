@@ -5,6 +5,7 @@ import com.neo4j.sandbox.git.GitOperations;
 import com.neo4j.sandbox.git.PushException;
 import com.neo4j.sandbox.github.CommitMessageFormatter;
 import com.neo4j.sandbox.github.Github;
+import com.neo4j.sandbox.github.GithubSettings;
 import com.neo4j.sandbox.github.PullRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,17 +36,21 @@ public class BatchUpdater {
 
     private final CommitMessageFormatter commitMessageFormatter;
 
+    private final String token;
+
     public BatchUpdater(BatchUpdaterSettings settings,
                         Updater updater,
                         GitOperations git,
                         Github github,
-                        CommitMessageFormatter commitMessageFormatter) {
+                        CommitMessageFormatter commitMessageFormatter,
+                        GithubSettings githubSettings) {
 
         this.settings = settings;
         this.updater = updater;
         this.git = git;
         this.github = github;
         this.commitMessageFormatter = commitMessageFormatter;
+        this.token = githubSettings.getToken();
     }
 
     /**
@@ -98,7 +103,7 @@ public class BatchUpdater {
         String baseBranch = git.currentBranch(cloneLocation);
         git.checkoutNewBranch(cloneLocation, branch);
         git.commitAll(cloneLocation, commitMessageFormatter.createMessage());
-        git.push(cloneLocation, "origin", branch);
+        git.push(cloneLocation, token, "origin", branch);
         LOGGER.debug("About to open pull request against {} branch", baseBranch);
         github.openPullRequest(
                 repositoryOwner(repositoryUri),
