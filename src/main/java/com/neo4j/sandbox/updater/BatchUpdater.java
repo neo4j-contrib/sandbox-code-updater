@@ -2,7 +2,7 @@ package com.neo4j.sandbox.updater;
 
 import com.neo4j.sandbox.git.BlankCommitException;
 import com.neo4j.sandbox.git.GitOperations;
-import com.neo4j.sandbox.git.PushException;
+import com.neo4j.sandbox.git.DuplicateBranchException;
 import com.neo4j.sandbox.github.CommitMessageFormatter;
 import com.neo4j.sandbox.github.Github;
 import com.neo4j.sandbox.github.GithubSettings;
@@ -82,12 +82,8 @@ public class BatchUpdater {
                 LOGGER.info("Could not update sandbox {} as git commit failed. " +
                         "This is due to the fact there is nothing to update. Skipping the update. " +
                         "See details below:\n {}", repositoryUri, exception.getMessage());
-            } catch (PushException exception) {
-                if (failedPushingExistingBranch(exception)) {
-                    LOGGER.info("Could not update sandbox {} as the branch {} already exists. Skipping the update.", repositoryUri, branch);
-                } else {
-                    throw exception;
-                }
+            } catch (DuplicateBranchException exception) {
+                LOGGER.info("Could not update sandbox {} as the branch {} already exists. Skipping the update.", repositoryUri, branch);
             } catch (IOException exception) {
                 updateFailures.put(repositoryUri, exception);
                 LOGGER.error("Could not update sandbox {}. Skipping the update.", repositoryUri);
@@ -118,10 +114,6 @@ public class BatchUpdater {
      */
     private static String generateConsistentBranchName(String repositoryName, List<Path> updatedFiles) throws IOException {
         return String.format("%s-%s", repositoryName, Hasher.hashFiles(updatedFiles));
-    }
-
-    private static boolean failedPushingExistingBranch(PushException exception) {
-        return exception.getMessage().contains("error: failed to push some refs");
     }
 
     private static PullRequest newPullRequest(String from, String into, String title) {

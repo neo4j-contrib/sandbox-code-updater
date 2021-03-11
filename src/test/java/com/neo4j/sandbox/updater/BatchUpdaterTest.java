@@ -3,7 +3,7 @@ package com.neo4j.sandbox.updater;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neo4j.sandbox.git.BlankCommitException;
 import com.neo4j.sandbox.git.GitOperations;
-import com.neo4j.sandbox.git.PushException;
+import com.neo4j.sandbox.git.DuplicateBranchException;
 import com.neo4j.sandbox.github.CommitMessageFormatter;
 import com.neo4j.sandbox.github.ExecutionContext;
 import com.neo4j.sandbox.github.Github;
@@ -100,12 +100,7 @@ public class BatchUpdaterTest {
     @Test
     void ignores_when_trying_to_push_an_existing_branch() throws IOException {
         when(updater.updateCodeExamples(any(Path.class), any(Path.class), eq("https://example.com/sandbox/number-1")))
-                .thenThrow(new PushException(new IOException("! [rejected]        number-1-452fb7da8bdfa8d748bc7b8992d0526088fbefffe9376ca2caca2b7afc9f072c -> number-1-452fb7da8bdfa8d748bc7b8992d0526088fbefffe9376ca2caca2b7afc9f072c (non-fast-forward)\n" +
-                        "\terror: failed to push some refs to 'https://example.com/sandbox/number-1'\n" +
-                        "\thint: Updates were rejected because the tip of your current branch is behind\n" +
-                        "\thint: its remote counterpart. Integrate the remote changes (e.g.\n" +
-                        "\thint: 'git pull ...') before pushing again.\n" +
-                        "\thint: See the 'Note about fast-forwards' in 'git push --help' for details.")));
+                .thenThrow(new DuplicateBranchException());
 
         assertThatCode(batchUpdater::updateBatch).doesNotThrowAnyException();
     }

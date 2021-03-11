@@ -1,7 +1,9 @@
 package com.neo4j.sandbox.git;
 
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.EmptyCommitException;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 @Service
@@ -26,6 +29,9 @@ public class JGit implements GitOperations {
 
     @Override
     public void checkoutNewBranch(Path cloneLocation, String branchName) throws IOException {
+        if (branchExists(cloneLocation, branchName)) {
+            throw new DuplicateBranchException();
+        }
         execute(() ->
                 repository(cloneLocation)
                         .checkout()
@@ -79,6 +85,16 @@ public class JGit implements GitOperations {
 
     private static Git repository(Path cloneLocation) throws IOException {
         return Git.open(cloneLocation.toFile());
+    }
+
+    private static boolean branchExists(Path cloneLocation, String branchName) throws IOException {
+        return execute(() -> {
+            List<Ref> refs = repository(cloneLocation)
+                    .branchList()
+                    .setListMode(ListBranchCommand.ListMode.REMOTE)
+                    .call();
+            return refs.stream().anyMatch(ref -> ref.getName().endsWith(branchName));
+        });
     }
 
     private static <T> T execute(Callable<T> task) throws IOException {
