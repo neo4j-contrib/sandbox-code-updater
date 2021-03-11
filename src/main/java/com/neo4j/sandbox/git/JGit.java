@@ -37,6 +37,7 @@ public class JGit implements GitOperations {
         execute(() ->
                 repository(cloneLocation)
                         .commit()
+                        .setAllowEmpty(false)
                         .setAll(true)
                         .setMessage(message)
                         .call());
