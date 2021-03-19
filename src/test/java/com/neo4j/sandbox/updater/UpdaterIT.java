@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -208,6 +209,16 @@ class UpdaterIT {
         );
     }
 
+    @Test
+    void does_not_generate_graphql_sample_if_schema_is_absent() throws IOException {
+        updater.updateCodeExamples(templateRepositoryPath(), sandboxCloneLocation, "https://github.com/neo4j-graph-examples/northwind");
+
+        Path graphqlFolder = sandboxCloneLocation.resolve("code").resolve("graphql");
+
+        assertThat(graphqlFolder.toFile().exists())
+                .overridingErrorMessage("graphql generation should be skipped")
+                .isFalse();
+    }
 
     private static String absolutePathOf(Path path) {
         return path.toFile().getAbsolutePath();
