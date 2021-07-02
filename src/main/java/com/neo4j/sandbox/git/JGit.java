@@ -9,10 +9,13 @@ import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import static java.lang.String.format;
 
 @Service
 public class JGit implements GitOperations {
@@ -20,12 +23,25 @@ public class JGit implements GitOperations {
     @Override
     public void clone(Path cloneLocation, String repositoryUri, String token) throws IOException {
         execute(() -> {
-            System.err.printf("URI is: %s, path is: %s%n", repositoryUri, cloneLocation);
-            return Git.cloneRepository()
-                    .setCredentialsProvider(credentials(token))
-                    .setDirectory(cloneLocation.toFile())
-                    .setURI(repositoryUri)
-                    .call();
+            File workingDir = cloneLocation.toFile();
+            if (!workingDir.mkdirs()) {
+                throw new IOException("mkdirs failed");
+            }
+            Process process = new ProcessBuilder("git", "clone", repositoryUri.replace("github.com", token + "@github.com"))
+                    .directory(workingDir)
+                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                    .start();
+            int exitStatus = process.waitFor();
+            if (exitStatus != 0) {
+                throw new IOException(String.format("Exit status was %d", exitStatus));
+            }
+            return null;
+
+//            return Git.cloneRepository()
+//                    .setCredentialsProvider(credentials(token))
+//                    .setDirectory(cloneLocation.toFile())
+//                    .setURI(repositoryUri)
+//                    .call();
         });
     }
 
