@@ -1,25 +1,6 @@
 sandbox:
   repositories:
     - https://github.com/neo4j-graph-examples/yelp.git
-    - https://github.com/neo4j-graph-examples/twitch.git
-    - https://github.com/neo4j-graph-examples/pole.git
-    - https://github.com/neo4j-graph-examples/graph-data-science.git
-    - https://github.com/neo4j-graph-examples/bloom.git
-    - https://github.com/neo4j-graph-examples/icij-paradise-papers.git
-    - https://github.com/neo4j-graph-examples/northwind.git
-    - https://github.com/neo4j-graph-examples/twitter-trolls.git
-    - https://github.com/neo4j-graph-examples/fraud-detection.git
-    - https://github.com/neo4j-graph-examples/fincen.git
-    - https://github.com/neo4j-graph-examples/contact-tracing.git
-    - https://github.com/neo4j-graph-examples/movies.git
-    - https://github.com/neo4j-graph-examples/icij-panama-papers.git
-    - https://github.com/neo4j-graph-examples/recommendations.git
-    - https://github.com/neo4j-graph-examples/wwc2019.git
-    - https://github.com/neo4j-graph-examples/legis-graph.git
-    - https://github.com/neo4j-graph-examples/network-management.git
-    - https://github.com/neo4j-graph-examples/blank-sandbox
-    - https://github.com/neo4j-graph-examples/twitter.git
-    - https://github.com/neo4j-graph-examples/openstreetmap.git
   code-samples-path:
 github:
   address: https://api.github.com

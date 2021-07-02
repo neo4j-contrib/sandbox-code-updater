@@ -19,12 +19,14 @@ public class JGit implements GitOperations {
 
     @Override
     public void clone(Path cloneLocation, String repositoryUri, String token) throws IOException {
-        execute(() ->
-                Git.cloneRepository()
-                        .setCredentialsProvider(credentials(token))
-                        .setDirectory(cloneLocation.toFile())
-                        .setURI(repositoryUri)
-                        .call());
+        execute(() -> {
+            System.err.printf("URI is: %s, path is: %s%n", repositoryUri, cloneLocation);
+            return Git.cloneRepository()
+                    .setCredentialsProvider(credentials(token))
+                    .setDirectory(cloneLocation.toFile())
+                    .setURI(repositoryUri)
+                    .call();
+        });
     }
 
     @Override
