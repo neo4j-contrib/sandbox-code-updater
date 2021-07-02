@@ -3,6 +3,7 @@ package com.neo4j.sandbox.git;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.EmptyCommitException;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.RefSpec;
@@ -43,12 +44,14 @@ public class JGit implements GitOperations {
     public void commitAll(Path cloneLocation, String message) throws IOException {
         try {
             execute(() ->
-                    repository(cloneLocation)
-                            .commit()
-                            .setAllowEmpty(false)
-                            .setAll(true)
-                            .setMessage(message)
-                            .call());
+            {
+                addAll(cloneLocation);
+                return repository(cloneLocation)
+                        .commit()
+                        .setAllowEmpty(false)
+                        .setMessage(message)
+                        .call();
+            });
         } catch (IOException exception) {
             if (exception.getCause() instanceof EmptyCommitException) {
                 throw new BlankCommitException(exception);
@@ -103,6 +106,10 @@ public class JGit implements GitOperations {
         } catch (Exception e) {
             throw new IOException(e);
         }
+    }
+
+    private void addAll(Path cloneLocation) throws GitAPIException, IOException {
+        repository(cloneLocation).add().addFilepattern(".").call();
     }
 }
 
