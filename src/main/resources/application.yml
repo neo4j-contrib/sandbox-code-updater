@@ -20,6 +20,7 @@ sandbox:
     - https://github.com/neo4j-graph-examples/blank-sandbox
     - https://github.com/neo4j-graph-examples/twitter.git
     - https://github.com/neo4j-graph-examples/openstreetmap.git
+    - https://github.com/neo4j-graph-examples/stackoverflow.git
   code-samples-path:
 github:
   address: https://api.github.com
