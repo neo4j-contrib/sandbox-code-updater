@@ -57,7 +57,7 @@ class UpdaterIT {
                         "from neo4j import GraphDatabase, basic_auth\n" +
                         "\n" +
                         "driver = GraphDatabase.driver(\n" +
-                        "  \"bolt://<HOST>:<BOLTPORT>\",\n" +
+                        "  \"neo4j://<HOST>:<BOLTPORT>\",\n" +
                         "  auth=basic_auth(\"<USERNAME>\", \"<PASSWORD>\"))\n" +
                         "\n" +
                         "cypher_query = '''\n" +
@@ -97,7 +97,7 @@ class UpdaterIT {
                         "\n" +
                         "  public static void main(String...args) {\n" +
                         "\n" +
-                        "    Driver driver = GraphDatabase.driver(\"bolt://<HOST>:<BOLTPORT>\",\n" +
+                        "    Driver driver = GraphDatabase.driver(\"neo4j://<HOST>:<BOLTPORT>\",\n" +
                         "              AuthTokens.basic(\"<USERNAME>\",\"<PASSWORD>\"));\n" +
                         "\n" +
                         "    try (Session session = driver.session(SessionConfig.forDatabase(\"neo4j\"))) {\n" +
@@ -144,7 +144,7 @@ class UpdaterIT {
                         "namespace dotnet {\n" +
                         "  class Example {\n" +
                         "  static async Task Main() {\n" +
-                        "    var driver = GraphDatabase.Driver(\"bolt://<HOST>:<BOLTPORT>\",\n" +
+                        "    var driver = GraphDatabase.Driver(\"neo4j://<HOST>:<BOLTPORT>\",\n" +
                         "                    AuthTokens.Basic(\"<USERNAME>\", \"<PASSWORD>\"));\n" +
                         "\n" +
                         "    var cypherQuery =\n" +
@@ -180,7 +180,7 @@ class UpdaterIT {
                 "// npm install --save neo4j-driver\n" +
                         "// node example.js\n" +
                         "const neo4j = require('neo4j-driver');\n" +
-                        "const driver = neo4j.driver('bolt://<HOST>:<BOLTPORT>',\n" +
+                        "const driver = neo4j.driver('neo4j://<HOST>:<BOLTPORT>',\n" +
                         "                  neo4j.auth.basic('<USERNAME>', '<PASSWORD>'), \n" +
                         "                  {/* encrypted: 'ENCRYPTION_OFF' */});\n" +
                         "\n" +

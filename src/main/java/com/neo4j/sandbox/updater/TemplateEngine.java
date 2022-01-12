@@ -35,7 +35,7 @@ class TemplateEngine {
             Metadata metadata = reader.read(readmeReader);
             String indentedQuery = queryIndenter(languageName).indent(code, metadata.getQuery());
             code = code.replaceFirst("[^\\S\\n]*MATCH \\(m:Movie.*", Matcher.quoteReplacement(indentedQuery));
-            code = code.replaceFirst("(?:neo4j|bolt)(?:\\+.{1,3})?://.*:\\d+", "bolt://<HOST>:<BOLTPORT>");
+            code = code.replaceFirst("(?:neo4j|bolt)(?:\\+.{1,3})?://.*:\\d+", "neo4j://<HOST>:<BOLTPORT>");
             code = code.replace("mUser", "<USERNAME>");
             code = code.replace("s3cr3t", "<PASSWORD>");
             code = code.replace("movies", "neo4j");

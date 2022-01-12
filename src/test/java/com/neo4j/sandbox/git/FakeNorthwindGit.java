@@ -35,7 +35,7 @@ public class FakeNorthwindGit implements GitOperations {
                 "from neo4j import GraphDatabase, basic_auth\n" +
                 "\n" +
                 "driver = GraphDatabase.driver(\n" +
-                "  \"bolt://<HOST>:<BOLTPORT>\",\n" +
+                "  \"neo4j://<HOST>:<BOLTPORT>\",\n" +
                 "  auth=basic_auth(\"<USERNAME>\", \"<PASSWORD>\"))\n" +
                 "\n" +
                 "cypher_query = '''\n" +
