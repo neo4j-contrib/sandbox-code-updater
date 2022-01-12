@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
-@Service
+// @Service
 public class GitCli implements GitOperations {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitCli.class);

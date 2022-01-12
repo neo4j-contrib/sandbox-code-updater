@@ -15,7 +15,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-@Service
+// @Service
 public class JGit implements GitOperations {
 
     @Override
