@@ -2,18 +2,20 @@ package com.neo4j.sandbox.git;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 // @Service
 public class GitCli implements GitOperations {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitCli.class);
+
+    private static final String GIT_LOCALE = "en_US";
 
     @Override
     public void clone(Path cloneLocation, String repositoryUri, String token) throws IOException {
@@ -25,6 +27,9 @@ public class GitCli implements GitOperations {
 
     @Override
     public void checkoutNewBranch(Path cloneLocation, String branchName) throws IOException {
+        if (branchExists(cloneLocation, branchName)) {
+            throw new DuplicateBranchException();
+        }
         executeCommand(cloneLocation.toFile(), "git", "checkout", "-b", branchName);
     }
 
@@ -34,7 +39,10 @@ public class GitCli implements GitOperations {
         executeCommand(workingDirectory, "git", "add", "--all");
         try {
             executeCommand(workingDirectory, "git", "commit", "-m", message);
-        } catch (IOException e) {
+        } catch (CommandIOException e) {
+            if (e.commandOutputContains("nothing to commit")) {
+                throw new BlankCommitException(e);
+            }
             throw new CommitException(e);
         }
     }
@@ -57,14 +65,22 @@ public class GitCli implements GitOperations {
         return stdout.substring(stdout.lastIndexOf("/") + 1);
     }
 
-    private static void executeCommand(File workingDirectory, String... commands) throws IOException {
+    private boolean branchExists(Path cloneLocation, String branchName) throws IOException {
+        String remoteUrl = executeCommand(cloneLocation.toFile(), "git", "remote", "get-url", "origin");
+        String output = executeCommand(cloneLocation.toFile(), "git", "ls-remote", "--heads", remoteUrl.trim(), branchName);
+        return !output.isBlank();
+    }
+
+    private static String executeCommand(File workingDirectory, String... commands) throws IOException {
         Process process = runProcess(workingDirectory, commands);
         assertSuccessfulExitCode(process, commands);
+        return stdout(process);
     }
 
     private static Process runProcess(File workingDirectory, String... commands) throws IOException {
         String command = String.join(" ", commands);
         ProcessBuilder processBuilder = new ProcessBuilder(commands);
+        processBuilder.environment().put("LC_ALL", GIT_LOCALE);
         processBuilder.directory(workingDirectory);
         Process process = processBuilder.start();
         waitForProcess(command, process);
@@ -76,10 +92,7 @@ public class GitCli implements GitOperations {
         String command = String.join(" ", commands);
         LOGGER.trace("Git command {} exited with status code {}", command, exitStatus);
         if (exitStatus != 0) {
-            String error = combinedOutputs(process);
-            throw new IOException(
-                    String.format("Expected Git operation %s to succeed but got exit status %d. See error below%n%s",
-                            command, exitStatus, error));
+            throw new CommandIOException(command, exitStatus, stdout(process), stderr(process));
         }
     }
 
@@ -91,17 +104,6 @@ public class GitCli implements GitOperations {
         } catch (InterruptedException e) {
             throw new IOException(String.format("Interrupted while performing Git operation %s. See error below%n%s", command, e));
         }
-    }
-
-    private static String combinedOutputs(Process process) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        builder.append(String.format("Error stream%n"));
-        builder.append(stderr(process));
-        builder.append("\n");
-        builder.append(String.format("Output stream%n"));
-        builder.append(stdout(process));
-        builder.append("\n");
-        return builder.toString();
     }
 
     private static String stdout(Process process) throws IOException {
