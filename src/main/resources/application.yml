@@ -21,6 +21,10 @@ sandbox:
     - https://github.com/neo4j-graph-examples/twitter.git
     - https://github.com/neo4j-graph-examples/openstreetmap.git
     - https://github.com/neo4j-graph-examples/stackoverflow.git
+    - https://github.com/neo4j-graph-examples/icij-offshoreleaks.git
+    - https://github.com/neo4j-graph-examples/twitter-v2.git
+    - https://github.com/neo4j-graph-examples/cybersecurity.git
+    - https://github.com/neo4j-graph-examples/entity-resolution.git
   code-samples-path:
 github:
   address: https://api.github.com
