@@ -15,7 +15,7 @@ public class TestPaths {
         }
     }
 
-    private static Path classpathFile(String name) throws URISyntaxException {
+    public static Path classpathFile(String name) throws URISyntaxException {
         URL resource = TestPaths.class.getResource(name);
         return new File(resource.toURI()).toPath();
     }
