@@ -7,11 +7,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import static com.neo4j.sandbox.updater.TestPaths.classpathFile;
 import static com.neo4j.sandbox.updater.TestPaths.templateRepositoryPath;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -22,11 +26,13 @@ class UpdaterIT {
     private Updater updater;
 
     @BeforeEach
-    void prepare(@TempDir Path tempDir) {
+    void prepare(@TempDir Path tempDir) throws Exception {
         sandboxCloneLocation = tempDir.resolve("northwind");
+        Asciidoctor asciidoctor = Asciidoctor.Factory.create();
         updater = new Updater(
                 new FakeNorthwindGit(sandboxCloneLocation),
-                new MetadataReader(Asciidoctor.Factory.create()),
+                new MetadataReader(asciidoctor),
+                new BrowserGuideConverter(asciidoctor),
                 new GithubSettings()
         );
     }
@@ -207,6 +213,15 @@ class UpdaterIT {
                         "    console.error(error);\n" +
                         "  });"
         );
+    }
+
+    @Test
+    void generates_browser_guide_example() throws Exception {
+        Path fakeTwitterRepoLocation = classpathFile("/fake-twitter-repo");
+        List<Path> paths = updater.generateBrowserGuides(fakeTwitterRepoLocation, "https://github.com/neo4j-graph-examples/twitter-v2");
+        Path browserGuidePath = paths.iterator().next();
+        assertThat(Files.readString(browserGuidePath, StandardCharsets.UTF_8)).contains("<article class=\"guide\" ng-controller=\"AdLibDataController\">");
+        assertThat(browserGuidePath.toFile().getName()).isEqualTo("twitter.neo4j-browser-guide");
     }
 
     @Test

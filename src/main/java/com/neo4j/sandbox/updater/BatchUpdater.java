@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,9 @@ public class BatchUpdater {
             Path cloneLocation = cloneLocationsBaseDir.resolve(repositoryName(repositoryUri));
             String branch = null;
             try {
-                List<Path> updatedFiles = updater.updateCodeExamples(settings.getCodeSamplesPath(), cloneLocation, repositoryUri);
+                List<Path> updatedFiles = new ArrayList<>();
+                updatedFiles.addAll(updater.updateCodeExamples(settings.getCodeSamplesPath(), cloneLocation, repositoryUri));
+                updatedFiles.addAll(updater.generateBrowserGuides(cloneLocation, repositoryUri));
                 branch = generateConsistentBranchName(repositoryName(repositoryUri), updatedFiles);
                 createPullRequest(repositoryUri, cloneLocation, branch);
             } catch (BlankCommitException exception) {
